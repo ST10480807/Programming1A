@@ -1,0 +1,134 @@
+name: Java CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    - name: Build with Maven
+      run: mvn clean install -B
+    - name: Run Tests
+      run: mvn test -B
+    - name: Archive Test Reports
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-reports
+        path: target/surefire-reports/
+3️⃣ Commit and push to GitHub
+If your project is already a Git repository:
+
+bash
+Copy code
+git add .
+git commit -m "Add GitHub Actions workflow for automated tests"
+git push origin main
+If you haven’t created a Git repo yet:
+
+bash
+Copy code
+git init
+git add .
+git commit -m "Initial commit with POE2 tests and workflow"
+# Replace URL with your GitHub repo URL
+git remote add origin https://github.com/yourusername/your-repo.git
+git branch -M main
+git push -u origin main
+4️⃣ Check GitHub Actions
+Go to your GitHub repository in a browser.
+
+Click Actions tab.
+
+You should see a workflow called “Java CI” running automatically.
+
+Once it finishes, you can click the run to see test results.
+
+✅ If all your tests pass, your rubric requirement is fully satisfied.
+
+If you want, I can also give you a very simple visual guide showing exactly where to click and paste files in GitHub’s web interface, so you don’t need to use the terminal at all.
+
+Do you want me to do that?
+
+
+
+
+
+
+
+You said:
+must i create the folders directly from the desktop or from netbeans
+
+
+ChatGPT said:
+You can do it either way, but for a NetBeans project it’s usually easier and safer to do it from within NetBeans so it integrates correctly with your project structure. Here’s how to do it step by step:
+
+Option 1: Using NetBeans (Recommended)
+Open your project in NetBeans.
+
+In the Projects view, right-click on your project and select New → Folder.
+
+Name the folder .github and click Finish.
+
+Right-click the .github folder → New → Folder → name it workflows.
+
+Right-click the workflows folder → New → Empty File → name it TestJava.yml.
+
+Copy-paste the workflow YAML I gave you into this file.
+
+Save the file.
+
+Now the folder structure in NetBeans will look like this:
+
+markdown
+Copy code
+your-project/
+└─ .github/
+   └─ workflows/
+      └─ TestJava.yml
+Option 2: Using File Explorer/Desktop
+Navigate to your project folder.
+
+Create a folder called .github.
+
+Inside .github, create another folder called workflows.
+
+Create a text file inside workflows called TestJava.yml.
+
+Open it in a text editor (Notepad, VS Code, etc.) and paste the YAML.
+
+Note: Files starting with a dot (.github) may be hidden in File Explorer, so make sure “Show hidden files” is enabled.
+
+✅ After creating the workflow
+Add, commit, and push your changes to GitHub.
+
+GitHub Actions will detect the .github/workflows/TestJava.yml file automatically.
+
+Your tests (POE2Test.java) will run on every push.
+
+If you want, I can make a tiny visual step-by-step guide showing exactly what to click in NetBeans to create the folders and YAML. That makes it nearly impossible to mess up.
+
+Do you want me to make that guide?
+
+
+
+
+
+
+
+
+
+
+
+
