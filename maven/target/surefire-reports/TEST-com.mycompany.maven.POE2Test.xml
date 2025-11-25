@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.mycompany.maven.POE2Test" time="2.179" tests="15" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.mycompany.maven.POE2Test" time="0.311" tests="26" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="user.country" value="US"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-17\bin"/>
-    <property name="sun.java.command" value="C:\Users\RC_Student_Lab\AppData\Local\Temp\surefire10434640663622619383\surefirebooter-20251013163415844_3.jar C:\Users\RC_Student_Lab\AppData\Local\Temp\surefire10434640663622619383 2025-10-13T16-34-15_649-jvmRun1 surefire-20251013163415844_1tmp surefire_0-20251013163415844_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\RC_Student_Lab\AppData\Local\Temp\surefire12343996621041686495\surefirebooter-20251120140114574_3.jar C:\Users\RC_Student_Lab\AppData\Local\Temp\surefire12343996621041686495 2025-11-20T14-01-14_221-jvmRun1 surefire-20251120140114574_1tmp surefire_0-20251120140114574_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="test" value="com.mycompany.maven.POE2Test"/>
     <property name="surefire.test.class.path" value="C:\Users\RC_Student_Lab\Documents\NetBeansProjects\maven\target\test-classes;C:\Users\RC_Student_Lab\Documents\NetBeansProjects\maven\target\classes;C:\Users\RC_Student_Lab\.m2\repository\com\googlecode\json-simple\json-simple\1.1.1\json-simple-1.1.1.jar;C:\Users\RC_Student_Lab\.m2\repository\junit\junit\4.13.2\junit-4.13.2.jar;C:\Users\RC_Student_Lab\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;"/>
@@ -31,7 +31,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\RC_Student_Lab\AppData\Local\Temp\surefire10434640663622619383\surefirebooter-20251013163415844_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\RC_Student_Lab\AppData\Local\Temp\surefire12343996621041686495\surefirebooter-20251120140114574_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="17.0.12+8-LTS-286"/>
@@ -58,19 +58,42 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="61.0"/>
   </properties>
-  <testcase name="testQuickChatInvalidChoiceThenQuit" classname="com.mycompany.maven.POE2Test" time="0.015"/>
-  <testcase name="testCellNumberFormatValid" classname="com.mycompany.maven.POE2Test" time="0.0"/>
-  <testcase name="testMessageTooLong" classname="com.mycompany.maven.POE2Test" time="0.0"/>
-  <testcase name="testStoreMessage" classname="com.mycompany.maven.POE2Test" time="2.079"/>
-  <testcase name="testValidatePassword" classname="com.mycompany.maven.POE2Test" time="0.002"/>
-  <testcase name="testCellNumberFormatInvalid" classname="com.mycompany.maven.POE2Test" time="0.001"/>
-  <testcase name="testMessageLength" classname="com.mycompany.maven.POE2Test" time="0.001"/>
-  <testcase name="testRegisterUserAndLogin" classname="com.mycompany.maven.POE2Test" time="0.0"/>
-  <testcase name="testMessageHashCorrect" classname="com.mycompany.maven.POE2Test" time="0.001"/>
-  <testcase name="testMessageIDGenerated" classname="com.mycompany.maven.POE2Test" time="0.001"/>
-  <testcase name="testMessageCreationAndValidation" classname="com.mycompany.maven.POE2Test" time="0.004"/>
-  <testcase name="testQuickChatQuitImmediately" classname="com.mycompany.maven.POE2Test" time="0.001"/>
-  <testcase name="testQuickChatSendDiscardThenQuit" classname="com.mycompany.maven.POE2Test" time="0.001"/>
-  <testcase name="testValidateCellphone" classname="com.mycompany.maven.POE2Test" time="0.001"/>
-  <testcase name="testValidateUsername" classname="com.mycompany.maven.POE2Test" time="0.001"/>
+  <testcase name="testDisplayReportContents" classname="com.mycompany.maven.POE2Test" time="0.061"/>
+  <testcase name="testRegisterUserAndLogin_Success" classname="com.mycompany.maven.POE2Test" time="0.0"/>
+  <testcase name="testValidatePassword_Valid" classname="com.mycompany.maven.POE2Test" time="0.0"/>
+  <testcase name="testDisplayLongestMessage" classname="com.mycompany.maven.POE2Test" time="0.005"/>
+  <testcase name="testMessageHash_SingleWord" classname="com.mycompany.maven.POE2Test" time="0.034">
+    <system-err><![CDATA[Nov 20, 2025 2:01:15 PM com.mycompany.maven.POE2$Message <init>
+WARNING: Invalid recipient format for message: BOGYMWOX4IQT
+]]></system-err>
+  </testcase>
+  <testcase name="testDeleteByHash_Success" classname="com.mycompany.maven.POE2Test" time="0.001"/>
+  <testcase name="testValidateUsername_TooLong_Fail" classname="com.mycompany.maven.POE2Test" time="0.001"/>
+  <testcase name="testValidatePassword_NoUpper_Fail" classname="com.mycompany.maven.POE2Test" time="0.001"/>
+  <testcase name="testMessageTooLong_Fail" classname="com.mycompany.maven.POE2Test" time="0.001"/>
+  <testcase name="testMessageCreationAndValidation_Valid" classname="com.mycompany.maven.POE2Test" time="0.001"/>
+  <testcase name="testMessageHash_EmptyText_Safe" classname="com.mycompany.maven.POE2Test" time="0.003">
+    <system-err><![CDATA[Nov 20, 2025 2:01:15 PM com.mycompany.maven.POE2$Message <init>
+WARNING: Invalid recipient format for message: A02KL7XA2SC5
+]]></system-err>
+  </testcase>
+  <testcase name="testDisregardedMessages_Population" classname="com.mycompany.maven.POE2Test" time="0.0"/>
+  <testcase name="testSentMessagesArrayCorrectlyPopulated" classname="com.mycompany.maven.POE2Test" time="0.003"/>
+  <testcase name="testLoginUser_NotRegistered_Fail" classname="com.mycompany.maven.POE2Test" time="0.001"/>
+  <testcase name="testMessageLength_Valid" classname="com.mycompany.maven.POE2Test" time="0.0"/>
+  <testcase name="testValidateCellphone_Valid" classname="com.mycompany.maven.POE2Test" time="0.017"/>
+  <testcase name="testSearchByRecipient" classname="com.mycompany.maven.POE2Test" time="0.039"/>
+  <testcase name="testValidateCellphone_InvalidLength_Fail" classname="com.mycompany.maven.POE2Test" time="0.002"/>
+  <testcase name="testValidatePassword_TooShort_Fail" classname="com.mycompany.maven.POE2Test" time="0.001"/>
+  <testcase name="testValidateUsername_Valid" classname="com.mycompany.maven.POE2Test" time="0.002"/>
+  <testcase name="testRegisterUser_InvalidPhone_Fail" classname="com.mycompany.maven.POE2Test" time="0.004"/>
+  <testcase name="testMessageRecipient_TooLong_Fail" classname="com.mycompany.maven.POE2Test" time="0.003">
+    <system-err><![CDATA[Nov 20, 2025 2:01:15 PM com.mycompany.maven.POE2$Message <init>
+WARNING: Invalid recipient format for message: M2BWF1LBUKXU
+]]></system-err>
+  </testcase>
+  <testcase name="testValidatePassword_NoSpecialChar_Fail" classname="com.mycompany.maven.POE2Test" time="0.0"/>
+  <testcase name="testSearchByMessageID_Found" classname="com.mycompany.maven.POE2Test" time="0.01"/>
+  <testcase name="testSearchByMessageID_NotFound_Fail" classname="com.mycompany.maven.POE2Test" time="0.016"/>
+  <testcase name="testValidateUsername_NoUnderscore_Fail" classname="com.mycompany.maven.POE2Test" time="0.001"/>
 </testsuite>

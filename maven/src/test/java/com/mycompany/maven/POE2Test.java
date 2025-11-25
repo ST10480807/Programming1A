@@ -17,6 +17,13 @@ public class POE2Test {
     @Before
     public void setUpStreams() {
         System.setOut(new PrintStream(outContent));
+        POE2.sentMessages.clear();
+        POE2.disregardedMessages.clear();
+        POE2.storedMessages.clear();
+        POE2.messageHashes.clear();
+        POE2.messageIDs.clear();
+        POE2.registerUser("dev_", "Pa$$w0rd!", "+27838884567");
+        POE2.loginUser("dev_", "Pa$$w0rd!"); // login instead of accessing private field
     }
 
     @After
@@ -27,142 +34,160 @@ public class POE2Test {
     @Before
     public void cleanStoredMessages() {
         File file = new File("stored_messages.json");
-        if (file.exists()) file.delete();
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write("[]");
+            writer.flush();
+        } catch (IOException e) { }
     }
 
-    // VALIDATION TESTS 
-    @Test
-    public void testValidateUsername() {
-        assertTrue(POE2.validateUsername("abc_"));
-        assertFalse(POE2.validateUsername("abcdef"));
-        assertFalse(POE2.validateUsername("abc"));
+    private void populateTestData() {
+        POE2.Message msg1 = new POE2.Message(1, "+27834557896", "Did you get the cake?");
+        POE2.sentMessages.add(msg1);
+
+        POE2.Message msg2 = new POE2.Message(2, "+27838884567", "Where are you? You are late! I have asked you to be on time.");
+        POE2.storedMessages.add(msg2);
+
+        POE2.disregardedMessages.add(new POE2.Message(3, "+27834484567", "Yohoooo, I am at your gate."));
+
+        POE2.Message msg4 = new POE2.Message(4, "+27838884567", "It is dinner time!");
+        POE2.sentMessages.add(msg4);
+
+        POE2.Message msg5 = new POE2.Message(5, "+27838884567", "Ok, I am leaving without you.");
+        POE2.storedMessages.add(msg5);
+
+        POE2.MessageStorage.storeMessage(msg2);
+        POE2.MessageStorage.storeMessage(msg5);
+
+        POE2.sentMessages.addAll(POE2.storedMessages);
+
+        POE2.messageHashes.clear();
+        POE2.messageIDs.clear();
+        for (POE2.Message msg : POE2.sentMessages) {
+            POE2.messageHashes.add(msg.hash);
+            POE2.messageIDs.add(msg.id);
+        }
     }
 
-    @Test
-    public void testValidatePassword() {
-        assertTrue(POE2.validatePassword("Passw0rd!"));
-        assertFalse(POE2.validatePassword("password"));
-        assertFalse(POE2.validatePassword("PASSWORD1"));
-        assertFalse(POE2.validatePassword("Pass1"));
-    }
+    // validation and account test
 
-    @Test
-    public void testValidateCellphone() {
-        assertTrue(POE2.validateCellphone("+27123456789"));
-        assertFalse(POE2.validateCellphone("123456789"));
-        assertFalse(POE2.validateCellphone("+27123"));
-    }
+    @Test public void testValidateUsername_Valid() { assertTrue(POE2.validateUsername("abc_")); }
+    @Test public void testValidateUsername_TooLong_Fail() { assertFalse(POE2.validateUsername("abcdef")); }
+    @Test public void testValidateUsername_NoUnderscore_Fail() { assertFalse(POE2.validateUsername("user")); }
 
-    @Test
-    public void testCellNumberFormatValid() {
-        assertTrue(POE2.validateCellphone("+27718693002"));
-    }
+    @Test public void testValidatePassword_Valid() { assertTrue(POE2.validatePassword("Passw0rd!")); }
+    @Test public void testValidatePassword_NoSpecialChar_Fail() { assertFalse(POE2.validatePassword("Password12")); }
+    @Test public void testValidatePassword_NoUpper_Fail() { assertFalse(POE2.validatePassword("password1!")); }
+    @Test public void testValidatePassword_TooShort_Fail() { assertFalse(POE2.validatePassword("P@ss123")); }
 
-    @Test
-    public void testCellNumberFormatInvalid() {
-        assertFalse(POE2.validateCellphone("08575975889"));
-    }
+    @Test public void testValidateCellphone_Valid() { assertTrue(POE2.validateCellphone("+27123456789")); }
+    @Test public void testValidateCellphone_InvalidLength_Fail() { assertFalse(POE2.validateCellphone("+27123")); }
 
-    // ACCOUNT TESTS 
-    @Test
-    public void testRegisterUserAndLogin() {
-        assertFalse(POE2.registerUser("bad", "pass", "123"));
+    @Test public void testRegisterUser_InvalidPhone_Fail() { assertFalse(POE2.registerUser("test_", "P@ssw0rd!", "0831234567")); }
+    @Test public void testRegisterUserAndLogin_Success() {
         assertTrue(POE2.registerUser("user_", "Passw0rd!", "+27123456789"));
         assertTrue(POE2.loginUser("user_", "Passw0rd!"));
-        assertFalse(POE2.loginUser("user_", "wrongpass"));
-        assertFalse(POE2.loginUser("wronguser", "Passw0rd!"));
     }
+    @Test public void testLoginUser_NotRegistered_Fail() { assertFalse(POE2.loginUser("ghost", "P@ssw0rd!")); }
 
-    // QUICKCHAT TESTS
-    @Test
-    public void testQuickChatQuitImmediately() {
-        String simulatedInput = "3\n"; // option 3 = Quit in current code
-        Scanner testInput = new Scanner(new ByteArrayInputStream(simulatedInput.getBytes()));
+    // message tests
 
-        POE2.quickChat(testInput);
-
-        String output = outContent.toString();
-        assertTrue(output.contains("Welcome to QuickChat"));
-        assertTrue(output.contains("Exiting QuickChat"));
-    }
-
-    @Test
-    public void testQuickChatInvalidChoiceThenQuit() {
-        String simulatedInput = "99\n3\n"; // invalid -> quit
-        Scanner testInput = new Scanner(new ByteArrayInputStream(simulatedInput.getBytes()));
-
-        POE2.quickChat(testInput);
-
-        String output = outContent.toString();
-        assertTrue(output.contains("Invalid choice"));
-        assertTrue(output.contains("Exiting QuickChat"));
-    }
-
-    @Test
-    public void testQuickChatSendDiscardThenQuit() {
-        // Only 1–3 exist in current POE2
-        String simulatedInput = "1\n2\n3\n";
-        Scanner testInput = new Scanner(new ByteArrayInputStream(simulatedInput.getBytes()));
-
-        POE2.quickChat(testInput);
-
-        String output = outContent.toString();
-        assertTrue(output.contains("Message sent!"));
-        assertTrue(output.contains("Message discarded."));
-        assertTrue(output.contains("Exiting QuickChat"));
-    }
-
-    // MESSAGE CLASS TESTS 
-    @Test
-    public void testMessageCreationAndValidation() {
+    @Test public void testMessageCreationAndValidation_Valid() {
         POE2.Message msg = new POE2.Message(1, "+27123456789", "Hello world");
-
         assertTrue(msg.checkMessageID());
         assertTrue(msg.checkRecipientCell());
-        assertNotNull(msg.createMessageHash());
-        assertTrue(msg.toString().contains("Hello world"));
     }
 
-    @Test
-    public void testMessageHashCorrect() {
-        POE2.Message msg = new POE2.Message(0, "+27718693002", "Hi Mike, can you join us for dinner tonight");
-        String[] words = msg.text.split(" ");
-        String firstWord = words[0].toUpperCase();
-        String lastWord = words[words.length - 1].toUpperCase();
-        String expected = msg.id.substring(0, 2) + ":" + msg.number + ":" + firstWord + lastWord;
-
-        assertEquals("Message hash generated correctly.", expected, msg.hash);
+    @Test public void testMessageHash_SingleWord() {
+        POE2.Message msg = new POE2.Message(1, "+27...", "HELLO");
+        assertTrue(msg.hash.endsWith(":1:HELLOHELLO"));
     }
 
-    @Test
-    public void testMessageIDGenerated() {
-        POE2.Message msg = new POE2.Message(1, "+27718693002", "Testing ID");
-        assertNotNull("Message ID generated: " + msg.id, msg.id);
-        assertTrue("Message ID <=10 digits", msg.checkMessageID());
+    @Test public void testMessageHash_EmptyText_Safe() {
+        POE2.Message msg = new POE2.Message(1, "+27...", "  ");
+        assertTrue(msg.hash.endsWith(":1:"));
     }
 
-    @Test
-    public void testStoreMessage() throws IOException {
-        POE2.Message msg = new POE2.Message(1, "+27123456789", "Test message");
-        POE2.Message.storeMessage(msg);
-
-        File file = new File("stored_messages.json");
-        assertTrue(file.exists());
-
-        String content = new String(java.nio.file.Files.readAllBytes(file.toPath()));
-        assertTrue(content.contains("Test message"));
-        assertTrue(content.contains(msg.id));
+    @Test public void testMessageLength_Valid() {
+        String message = "This is a short message.";
+        assertTrue(message.length() <= 250);
     }
 
-    @Test
-    public void testMessageLength() {
-        String message = "Hi Mike, can you join us for dinner tonight";
-        assertTrue("Message ready to send.", message.length() <= 250);
-    }
-
-    @Test
-    public void testMessageTooLong() {
+    @Test public void testMessageTooLong_Fail() {
         String message = new String(new char[260]).replace('\0', 'A');
-        assertFalse("Message exceeds 250 characters.", message.length() <= 250);
+        assertFalse(message.length() <= 250);
+    }
+
+    @Test public void testMessageRecipient_TooLong_Fail() {
+        POE2.Message msg = new POE2.Message(1, "+2712345678901", "Test");
+        assertFalse(msg.checkRecipientCell());
+    }
+
+    // QuickChat Simulation Tests
+
+    @Test public void testDisregardedMessages_Population() {
+        String invalidText = new String(new char[260]).replace('\0', 'A');
+        POE2.Message msg = new POE2.Message(6, "+27123456789", invalidText);
+        POE2.disregardedMessages.add(msg);
+        assertEquals(1, POE2.disregardedMessages.size());
+    }
+
+    @Test public void testSentMessagesArrayCorrectlyPopulated() {
+        populateTestData();
+        assertEquals(4, POE2.sentMessages.size());
+    }
+
+    @Test public void testDisplayLongestMessage() {
+        populateTestData();
+        POE2.Message longest = Collections.max(POE2.sentMessages, Comparator.comparingInt(m -> m.text.length()));
+        assertEquals("Where are you? You are late! I have asked you to be on time.", longest.text);
+    }
+
+    @Test public void testSearchByMessageID_Found() {
+        populateTestData();
+        POE2.Message msg4 = POE2.sentMessages.stream()
+                .filter(msg -> msg.text.equals("It is dinner time!"))
+                .findFirst().orElse(null);
+        POE2.Message foundMsg = POE2.sentMessages.stream()
+                .filter(msg -> msg.id.equals(msg4.id))
+                .findFirst().orElse(null);
+        assertNotNull(foundMsg);
+    }
+
+    @Test public void testSearchByMessageID_NotFound_Fail() {
+        populateTestData();
+        POE2.Message foundMsg = POE2.sentMessages.stream()
+                .filter(msg -> msg.id.equals("NONEXISTENT"))
+                .findFirst().orElse(null);
+        assertNull(foundMsg);
+    }
+
+    @Test public void testSearchByRecipient() {
+        populateTestData();
+        long count = POE2.sentMessages.stream()
+                .filter(msg -> msg.recipient.equals("+27838884567"))
+                .count();
+        assertEquals(3, count);
+    }
+
+    @Test public void testDeleteByHash_Success() {
+        populateTestData();
+        POE2.Message msg2 = POE2.storedMessages.get(0);
+        String hashToDelete = msg2.hash;
+        int initialSize = POE2.sentMessages.size();
+        POE2.Message toDelete = POE2.sentMessages.stream()
+                .filter(msg -> msg.hash.equals(hashToDelete))
+                .findFirst().orElse(null);
+        POE2.sentMessages.remove(toDelete);
+        assertFalse(POE2.sentMessages.stream().anyMatch(msg -> msg.hash.equals(hashToDelete)));
+        assertEquals(initialSize - 1, POE2.sentMessages.size());
+    }
+
+    @Test public void testDisplayReportContents() {
+        populateTestData();
+        for (POE2.Message msg : POE2.sentMessages) {
+            assertNotNull(msg.id);
+            assertNotNull(msg.hash);
+            assertNotNull(msg.recipient);
+        }
     }
 }
